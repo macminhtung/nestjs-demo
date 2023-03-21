@@ -2,6 +2,8 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import configuration, { IConfig } from 'configuration';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { BullRootModuleOptions } from '@nestjs/bull';
+import { ClientOptions, Transport } from '@nestjs/microservices';
+import { RABBIT_QUEUE_NAMES } from 'common/constant/rabbitmq';
 
 export class ConfigService {
   privateConfig: IConfig = configuration();
@@ -41,6 +43,26 @@ export class ConfigService {
         port: this.config.redis.port,
         username: this.config.redis.username,
         password: this.config.redis.password,
+      },
+    };
+
+    return options;
+  }
+
+  get rabbitConfig(): ClientOptions {
+    const { username, password, port, host } = this.config.rabbit;
+    const rabbitUrl =
+      username && password
+        ? `amqp://${username}:${password}@${host}:${port}`
+        : `amqp://${host}:${port}`;
+    const options: ClientOptions = {
+      transport: Transport.RMQ,
+      options: {
+        urls: [rabbitUrl],
+        queue: RABBIT_QUEUE_NAMES.RABBIT_MESSAGE,
+        queueOptions: {
+          durable: true,
+        },
       },
     };
 
