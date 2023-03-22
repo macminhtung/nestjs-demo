@@ -1,14 +1,71 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
-import configuration, { IConfig } from 'configuration';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { BullRootModuleOptions } from '@nestjs/bull';
 import { ClientOptions, Transport } from '@nestjs/microservices';
 import { RABBIT_QUEUE_NAMES } from 'common/constant/rabbitmq';
 
-export class ConfigService {
-  privateConfig: IConfig = configuration();
+import * as dotenv from 'dotenv';
 
-  get config(): IConfig {
+if (['development', 'test'].includes(process.env.NODE_ENV)) {
+  dotenv.config({
+    path: '.env.development',
+  });
+}
+
+interface IDbConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+  database: string;
+}
+
+interface IRedisConfig {
+  host: string;
+  port: number;
+  username: string;
+  password: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface IRabbitConfig extends IRedisConfig {}
+
+interface IConfig {
+  nodeEnv: string;
+  port: number;
+  db: IDbConfig;
+  redis: IRedisConfig;
+  rabbit: IRabbitConfig;
+}
+
+export const APP_CONFIG: IConfig = {
+  nodeEnv: process.env.NODE_ENV,
+  port: Number.parseInt(process.env.PORT, 10) || 5000,
+  db: {
+    host: process.env.DB_HOST,
+    port: Number.parseInt(process.env.DB_PORT, 10) || 5432,
+    username: process.env.DB_USERNAME,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+  },
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: Number.parseInt(process.env.REDIS_PORT, 10) || 6379,
+    username: process.env.REDIS_USERNAME || undefined,
+    password: process.env.REDIS_PASSWORD || undefined,
+  },
+  rabbit: {
+    host: process.env.RABBIT_HOST,
+    port: Number.parseInt(process.env.RABBIT_PORT, 10) || 5672,
+    username: process.env.RABBIT_USERNAME || undefined,
+    password: process.env.RABBIT_PASSWORD || undefined,
+  },
+};
+
+export class ConfigService {
+  privateConfig = APP_CONFIG;
+
+  get config() {
     return this.privateConfig;
   }
 
