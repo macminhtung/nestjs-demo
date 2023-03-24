@@ -11,10 +11,11 @@ import { RabbitService } from 'modules/rabbit-mq/rabbit.service';
   controllers: [RabbitController],
   providers: [
     {
-      provide: RABBIT_SERVICE_NAMES.RABBIT_MESSAGE_SERVICE,
+      provide: RABBIT_SERVICE_NAMES,
       useFactory: (configService: ConfigService) => {
         const options = configService.rabbitConfig;
-        return ClientProxyFactory.create(options);
+        const clientProxy = ClientProxyFactory.create(options);
+        return clientProxy;
       },
       inject: [ConfigService],
     },

@@ -2,7 +2,13 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { BullRootModuleOptions } from '@nestjs/bull';
 import { ClientOptions, Transport } from '@nestjs/microservices';
-import { RABBIT_QUEUE_NAMES } from 'common/constant/rabbitmq';
+import {
+  RABBIT_QUEUE_NAMES,
+  RABBIT_EXCHANGE_NAMES,
+  RABBIT_EXCHANGE_TYPES,
+  RABBIT_CHANNEL_NAMES,
+} from 'common/constant/rabbitmq';
+import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
 
 import * as dotenv from 'dotenv';
 
@@ -63,10 +69,18 @@ export const APP_CONFIG: IConfig = {
 };
 
 export class ConfigService {
-  privateConfig = APP_CONFIG;
+  private static instanceCache?: ConfigService;
+
+  public static get instance(): ConfigService {
+    if (!this.instanceCache) {
+      this.instanceCache = new this();
+    }
+
+    return this.instanceCache;
+  }
 
   get config() {
-    return this.privateConfig;
+    return APP_CONFIG;
   }
 
   get typeOrmConfig(): TypeOrmModuleOptions {
@@ -117,10 +131,40 @@ export class ConfigService {
       options: {
         urls: [rabbitUrl],
         queue: RABBIT_QUEUE_NAMES.RABBIT_MESSAGE,
+        noAck: false,
         queueOptions: {
           durable: true,
         },
       },
+    };
+
+    return options;
+  }
+
+  get rabbitAdvanceConfig(): RabbitMQConfig {
+    const { username, password, port, host } = this.config.rabbit;
+    const { CHANNEL_1, CHANNEL_2 } = RABBIT_CHANNEL_NAMES;
+    const rabbitUri =
+      username && password
+        ? `amqp://${username}:${password}@${host}:${port}`
+        : `amqp://${host}:${port}`;
+    const options: RabbitMQConfig = {
+      uri: rabbitUri,
+      exchanges: [
+        {
+          name: RABBIT_EXCHANGE_NAMES.FANOUT,
+          type: RABBIT_EXCHANGE_TYPES.FANOUT,
+        },
+      ],
+      // channels: {
+      //   [CHANNEL_1]: {
+      //     prefetchCount: 5,
+      //     default: true,
+      //   },
+      //   [CHANNEL_2]: {
+      //     prefetchCount: 2,
+      //   },
+      // },
     };
 
     return options;

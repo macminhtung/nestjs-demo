@@ -12,10 +12,12 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from 'interceptors/logging.interceptor';
 import { RabbitModule } from 'modules/rabbit-mq/rabbit.module';
 import { BullMQModule } from 'modules/bull-mq/bull.module';
+import { RabbitAdvanceModule } from 'modules/rabbit-mq-advance/rabbit-advance.module';
 
 @Module({
   imports: [
     RabbitModule,
+    RabbitAdvanceModule,
     UserModule,
     BullMQModule,
     TypeOrmModule.forRootAsync({
