@@ -10,7 +10,6 @@ import { ConfigService } from 'modules/share/config.service';
       RabbitMQModule,
       ConfigService.instance.rabbitAdvanceConfig,
     ),
-    RabbitAdvanceModule,
   ],
   controllers: [RabbitAdvanceController],
   providers: [RabbitAdvanceService],

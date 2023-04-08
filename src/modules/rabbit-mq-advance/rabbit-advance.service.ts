@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RABBIT_EXCHANGE_NAMES } from 'common/constant/rabbitmq';
+import { RABBIT_EXCHANGES } from 'common/constant/rabbitmq';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 
 @Injectable()
@@ -10,16 +10,25 @@ export class RabbitAdvanceService {
     console.log('\n==> MESSAGE_ADVANCE =', message);
 
     // Publish message
-    const resData = await this.amqpConnection
-      .publish(RABBIT_EXCHANGE_NAMES.FANOUT, '', {
+    await this.amqpConnection
+      .publish(RABBIT_EXCHANGES.TOPIC, 'say-oh-yeah', {
         message,
       })
       .catch((err) => {
         console.log(err);
       });
 
-    console.log('resData =', resData);
+    const response = await this.amqpConnection
+      .request({
+        exchange: RABBIT_EXCHANGES.TOPIC,
+        routingKey: 'rpc',
+        payload: {
+          message,
+        },
+      })
+      .catch((error) => console.log(`==> [ERROR]: ${error.message}`));
 
-    return resData;
+    console.log('response =', response);
+    return response;
   }
 }

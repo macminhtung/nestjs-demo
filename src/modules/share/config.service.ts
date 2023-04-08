@@ -1,12 +1,12 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { BullRootModuleOptions } from '@nestjs/bull';
-import { ClientOptions, Transport } from '@nestjs/microservices';
+import { ClientOptions, RmqOptions, Transport } from '@nestjs/microservices';
 import {
-  RABBIT_QUEUE_NAMES,
-  RABBIT_EXCHANGE_NAMES,
+  RABBIT_QUEUES,
+  RABBIT_EXCHANGES,
   RABBIT_EXCHANGE_TYPES,
-  RABBIT_CHANNEL_NAMES,
+  RABBIT_CHANNELS,
 } from 'common/constant/rabbitmq';
 import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
 
@@ -120,7 +120,7 @@ export class ConfigService {
     return options;
   }
 
-  get rabbitConfig(): ClientOptions {
+  get rabbitConfig(): RmqOptions {
     const { username, password, port, host } = this.config.rabbit;
     const rabbitUrl =
       username && password
@@ -130,7 +130,7 @@ export class ConfigService {
       transport: Transport.RMQ,
       options: {
         urls: [rabbitUrl],
-        queue: RABBIT_QUEUE_NAMES.RABBIT_MESSAGE,
+        queue: RABBIT_QUEUES.MESSAGE_1,
         noAck: false,
         queueOptions: {
           durable: true,
@@ -143,17 +143,18 @@ export class ConfigService {
 
   get rabbitAdvanceConfig(): RabbitMQConfig {
     const { username, password, port, host } = this.config.rabbit;
-    const { CHANNEL_1, CHANNEL_2 } = RABBIT_CHANNEL_NAMES;
+    const { CHANNEL_1, CHANNEL_2 } = RABBIT_CHANNELS;
     const rabbitUri =
       username && password
         ? `amqp://${username}:${password}@${host}:${port}`
         : `amqp://${host}:${port}`;
     const options: RabbitMQConfig = {
       uri: rabbitUri,
+      enableControllerDiscovery: true,
       exchanges: [
         {
-          name: RABBIT_EXCHANGE_NAMES.FANOUT,
-          type: RABBIT_EXCHANGE_TYPES.FANOUT,
+          name: RABBIT_EXCHANGES.DIRECT,
+          type: RABBIT_EXCHANGE_TYPES.DIRECT,
         },
       ],
       // channels: {

@@ -1,15 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy, RmqRecordBuilder } from '@nestjs/microservices';
-import {
-  RABBIT_SERVICE_NAMES,
-  RABBIT_MESSAGE_NAMES,
-  RABBIT_EVENT_NAMES,
-} from 'common/constant/rabbitmq';
+import { PATTERN_NAMES, RABBIT_SERVICE_NAME } from 'common/constant/rabbitmq';
 
 @Injectable()
 export class RabbitService {
   constructor(
-    @Inject(RABBIT_SERVICE_NAMES)
+    @Inject(RABBIT_SERVICE_NAME)
     private readonly rabbitClient: ClientProxy,
   ) {}
 
@@ -17,13 +13,13 @@ export class RabbitService {
     console.log('\n==> MESSAGE =', message);
 
     // Emit message
-    this.rabbitClient.emit(RABBIT_EVENT_NAMES.TEST_EVENT_MESSAGE, {
+    this.rabbitClient.emit(PATTERN_NAMES.EMIT_PATTERN, {
       message: `EVENT-${message}`,
     });
 
     // Send message
     this.rabbitClient
-      .send(RABBIT_MESSAGE_NAMES.TEST_MESSAGE, { message })
+      .send(PATTERN_NAMES.SEND_PATTERN, { message })
       .subscribe((response) => {
         console.log('\n ==> RESPONSE =', response);
       });

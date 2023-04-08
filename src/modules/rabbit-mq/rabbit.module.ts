@@ -3,7 +3,7 @@ import { RabbitController } from 'modules/rabbit-mq/rabbit.controller';
 import { SharedModule } from 'modules/share/shared.module';
 import { ConfigService } from 'modules/share/config.service';
 import { ClientProxyFactory } from '@nestjs/microservices';
-import { RABBIT_SERVICE_NAMES } from 'common/constant/rabbitmq';
+import { RABBIT_SERVICE_NAME } from 'common/constant/rabbitmq';
 import { RabbitService } from 'modules/rabbit-mq/rabbit.service';
 
 @Module({
@@ -11,7 +11,7 @@ import { RabbitService } from 'modules/rabbit-mq/rabbit.service';
   controllers: [RabbitController],
   providers: [
     {
-      provide: RABBIT_SERVICE_NAMES,
+      provide: RABBIT_SERVICE_NAME,
       useFactory: (configService: ConfigService) => {
         const options = configService.rabbitConfig;
         const clientProxy = ClientProxyFactory.create(options);

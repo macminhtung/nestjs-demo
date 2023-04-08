@@ -1,16 +1,8 @@
-export const RABBIT_SERVICE_NAMES = 'RABBIT_MESSAGE_SERVICE';
+export const RABBIT_SERVICE_NAME = 'RABBIT_SERVICE_NAME';
 
-export const RABBIT_QUEUE_NAMES = {
-  RABBIT_MESSAGE: 'rabbit-message-queue',
-};
-
-export const RABBIT_EVENT_NAMES = {
-  TEST_EVENT_MESSAGE: 'test-event-message',
-};
-
-export const RABBIT_MESSAGE_NAMES = {
-  TEST_MESSAGE: 'test-message',
-  TEST_PRIORITY_MESSAGE: 'test-priority-message',
+export const RABBIT_CHANNELS = {
+  CHANNEL_1: 'rabbit-channel-1',
+  CHANNEL_2: 'rabbit-channel-2',
 };
 
 export const RABBIT_EXCHANGE_TYPES = {
@@ -20,14 +12,24 @@ export const RABBIT_EXCHANGE_TYPES = {
   HEADER: 'headers',
 };
 
-export const RABBIT_EXCHANGE_NAMES = {
+export const RABBIT_EXCHANGES = {
   TOPIC: 'topic-exchange',
   DIRECT: 'direct-exchange',
   FANOUT: 'fanout-exchange',
   HEADER: 'headers-exchange',
 };
 
-export const RABBIT_CHANNEL_NAMES = {
-  CHANNEL_1: 'rabbit-channel-1',
-  CHANNEL_2: 'rabbit-channel-2',
+export const RABBIT_QUEUES = {
+  MESSAGE_1: 'message-queue-1',
+  MESSAGE_2: 'message-queue-2',
+};
+
+export const ROUTING_KEYS = {
+  KEY_1: 'routing-key-1',
+  KEY_2: 'outing-key-1',
+};
+
+export const PATTERN_NAMES = {
+  EMIT_PATTERN: 'emit-pattern',
+  SEND_PATTERN: 'send-pattern',
 };
