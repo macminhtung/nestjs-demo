@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { RABBIT_EXCHANGES } from 'common/constant/rabbitmq';
+import { RABBIT_EXCHANGES } from 'common/constants/rabbitmq';
 import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 
 @Injectable()

@@ -6,7 +6,7 @@ import {
   OnQueueCompleted,
 } from '@nestjs/bull';
 import { Job } from 'bull';
-import { QUEUE_NAMES, JOB_NAMES } from 'common/constant/bullmq';
+import { QUEUE_NAMES, JOB_NAMES } from 'common/constants/bullmq';
 
 @Processor(QUEUE_NAMES.MESSAGE)
 export class MessageConsumer {

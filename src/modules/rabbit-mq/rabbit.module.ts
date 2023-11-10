@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { RabbitController } from 'modules/rabbit-mq/rabbit.controller';
 import { SharedModule } from 'modules/share/shared.module';
-import { ConfigService } from 'modules/share/config.service';
+import { ConfigService } from 'modules/share/services/config.service';
 import { ClientProxyFactory } from '@nestjs/microservices';
-import { RABBIT_SERVICE_NAME } from 'common/constant/rabbitmq';
+import { RABBIT_SERVICE_NAME } from 'common/constants/rabbitmq';
 import { RabbitService } from 'modules/rabbit-mq/rabbit.service';
 
 @Module({

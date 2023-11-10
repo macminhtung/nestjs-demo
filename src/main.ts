@@ -1,64 +1,65 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory, Reflector, HttpAdapterHost } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { urlencoded, json } from 'body-parser';
-import {
-  ValidationPipe,
-  BadRequestException,
-  ValidationError,
-  HttpStatus,
-} from '@nestjs/common';
-import { UserService } from 'modules/user/user.service';
+import * as compression from 'compression';
+import { Logger } from '@nestjs/common';
+import { PROVIDER_TOKENS } from 'common/constants';
+import { HttpExceptionsFilter } from 'filters/httpException.filter';
 import { AuthGuard } from 'guards/auth.guard';
-import { LoggingInterceptor } from 'interceptors/logging.interceptor';
-
-const { PORT } = process.env;
+import { HttpValidationPipe } from 'pipes/httpValidation.pipe';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalInterceptors(new LoggingInterceptor());
+
   app.enableCors(); // Enable CORS
+  app.use(compression()); // Node.js compression middleware.
   app.use(json({ limit: '50mb' })); // Limit json
   app.use(urlencoded({ limit: '50mb', extended: true })); // Limit url
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        console.error(
-          '\n ==> ValidationError',
-          JSON.stringify(validationErrors),
-          '\n',
-        );
-        return new BadRequestException({
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: JSON.stringify(validationErrors),
-        });
-      },
-      whitelist: true,
-      transform: true,
-      dismissDefaultMessages: true,
-      validationError: {
-        target: false,
-      },
-    }),
-  );
-
-  // Setup global guards
+  // #=======================#
+  // # ==> GLOBAL GUARDS <== #
+  // #=======================#
   const reflector = app.get(Reflector);
-  const userService = app.get<UserService>(UserService);
+  const userService = app.get(PROVIDER_TOKENS.USER_SERVICE);
   app.useGlobalGuards(new AuthGuard(reflector, userService));
 
-  // Setup swagger
+  // #======================#
+  // # ==> GLOBAL PIPES <== #
+  // #======================#
+  app.useGlobalPipes(new HttpValidationPipe({ whitelist: true }));
+
+  // #========================#
+  // # ==> GLOBAL FILTERS <== #
+  // #========================#
+  const httpAdapterHost = app.get(HttpAdapterHost);
+  const logger: Logger = app.get(PROVIDER_TOKENS.LOGGER);
+  app.useGlobalFilters(new HttpExceptionsFilter(httpAdapterHost, logger));
+
+  // #=================#
+  // # ==> SWAGGER <== #
+  // #=================#
+  const swaggerPath = 'documentation';
   const documentConfig = new DocumentBuilder()
-    .setTitle('Demo Swagger')
-    .setDescription('The Demo API description')
-    .setVersion('1.0')
-    .addTag('Demo')
+    .setTitle('Survey Master Documentation')
+    .setDescription('The Survey Master API description')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, documentConfig);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup(swaggerPath, app, document);
 
-  await app.listen(PORT);
-  console.info(`Server running on port ${PORT}`);
+  // #===========================#
+  // # ==> START APPLICATION <== #
+  // #===========================#
+  const { PORT = 3001, NODE_ENV } = process.env;
+  await app.listen(parseInt(`${PORT}`));
+  logger.debug(
+    `==> APP IS RUNNING | PORT: ${PORT} <== ${
+      NODE_ENV === 'development'
+        ? `[http://localhost:${PORT}/${swaggerPath}]`
+        : ''
+    }`,
+    'APPLICATION',
+  );
 }
 bootstrap();

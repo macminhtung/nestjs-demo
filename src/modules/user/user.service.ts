@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { UserEntity } from './user.entity';
-import { BaseService } from '../base/base.service';
+import { UserEntity } from 'modules/user/user.entity';
+import { BaseService } from 'common/base.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateUserInput } from './dto/input/create-user.input';
-import { UpdateUserInput } from './dto/input/update-user.input';
-import { DeleteUserInput } from './dto/input/delete-user.input';
-import { GetUserArgs } from './dto/args/get-user.args';
-import { GetUsersArgs } from './dto/args/get-users.args';
+import {
+  CreateUserInput,
+  UpdateUserInput,
+  DeleteUserInput,
+  GetUserArgs,
+  GetUsersArgs,
+} from 'modules/user/dto';
 
 @Injectable()
 export class UserService extends BaseService<UserEntity> {
@@ -18,27 +20,45 @@ export class UserService extends BaseService<UserEntity> {
     super(userRepository);
   }
 
-  async createUser(createUserData: CreateUserInput): Promise<UserEntity> {
-    const newUser = this.repository.create(createUserData);
-    return await this.repository.save(newUser);
+  // #=====================#
+  // # ==> CREATE USER <== #
+  // #=====================#
+  async createUser(input: CreateUserInput): Promise<UserEntity> {
+    return await this.repository.save(input);
   }
 
-  async updateUser(updateUserData: UpdateUserInput): Promise<UserEntity> {
-    return await this.repository.save(updateUserData);
+  // #=====================#
+  // # ==> UPDATE USER <== #
+  // #=====================#
+  async updateUser(input: UpdateUserInput): Promise<UserEntity> {
+    await this.checkExist({ id: input.id });
+    return await this.repository.save(input);
   }
 
-  async getUser(getUserArgs: GetUserArgs): Promise<UserEntity> {
-    return await this.repository.findOneBy({ id: getUserArgs.id });
+  // #=====================#
+  // # ==> DELETE USER <== #
+  // #=====================#
+  async deleteUser(input: DeleteUserInput): Promise<any> {
+    return await this.repository.softDelete(input.id);
   }
 
-  async getUsers(getUsersArgs: GetUsersArgs): Promise<UserEntity[]> {
+  // #==================#
+  // # ==> GET USER <== #
+  // #==================#
+  async getUser(args: GetUserArgs): Promise<UserEntity> {
+    return await this.checkExist({
+      where: { id: args.id },
+      relations: { roles: true },
+    });
+  }
+
+  // #===================#
+  // # ==> GET USERS <== #
+  // #===================#
+  async getUsers(args: GetUsersArgs): Promise<UserEntity[]> {
     return await this.repository
       .createQueryBuilder('user')
-      .where('id IN (:...ids)', { ids: getUsersArgs.ids })
+      .where('id IN (:...ids)', { ids: args.ids })
       .getMany();
-  }
-
-  async deleteUser(deleteUserData: DeleteUserInput): Promise<any> {
-    return await this.repository.softDelete(deleteUserData.id);
   }
 }
