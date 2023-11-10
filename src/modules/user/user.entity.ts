@@ -21,10 +21,6 @@ export class UserEntity extends BaseEntity {
   @Column()
   email: string;
 
-  @Field()
-  @Column({ nullable: true })
-  age: number;
-
   @Field({ nullable: true })
   @Column({ nullable: true })
   displayName: string;

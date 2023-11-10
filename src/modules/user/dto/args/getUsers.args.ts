@@ -1,9 +1,10 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { IsArray } from 'class-validator';
+import { IsArray, IsOptional } from 'class-validator';
 
 @ArgsType()
 export class GetUsersArgs {
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
+  @IsOptional()
   @IsArray()
   ids: string[];
 }

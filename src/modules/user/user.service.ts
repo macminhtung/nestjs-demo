@@ -56,9 +56,11 @@ export class UserService extends BaseService<UserEntity> {
   // # ==> GET USERS <== #
   // #===================#
   async getUsers(args: GetUsersArgs): Promise<UserEntity[]> {
-    return await this.repository
-      .createQueryBuilder('user')
-      .where('id IN (:...ids)', { ids: args.ids })
-      .getMany();
+    const queryBuilder = this.repository.createQueryBuilder('user');
+
+    if (args.ids?.length)
+      queryBuilder.where('id IN (:...ids)', { ids: args.ids });
+
+    return await queryBuilder.leftJoinAndSelect('user.roles', 'Rs').getMany();
   }
 }
