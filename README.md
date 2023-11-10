@@ -1,7 +1,7 @@
 
 ## Description
 
-  * Demo nestjs framework + graphql + bullmq
+  * Demo NestJs + Graphql + RestAPI + BullMQ + RabbitMQ
 
 ## Installation
 

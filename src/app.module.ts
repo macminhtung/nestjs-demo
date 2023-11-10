@@ -26,7 +26,7 @@ import { HttpLoggerMiddleware } from 'middlewares/httpLogger.middleware';
       useFactory: (configService: ConfigService) => configService.typeOrmConfig,
       inject: [ConfigService],
       dataSourceFactory: async (options) => {
-        console.log('\n ==> options =', options);
+        // console.log('\n ==> options =', options);
         const dataSource = new DataSource(options);
         await dataSource.initialize();
         await dataSource.runMigrations();
