@@ -9,20 +9,15 @@ import { BaseEntity } from 'common/base.entity';
 import { ScopeEntity } from 'modules/role/scope/scope.entity';
 import { EntityEnum } from 'common/enums';
 import { UserEntity } from 'modules/user/user.entity';
-import { ObjectType, Field } from '@nestjs/graphql';
 
-@ObjectType()
 @Entity({ name: EntityEnum.ROLE })
 export class RoleEntity extends BaseEntity {
-  @Field()
-  @PrimaryGeneratedColumn('increment', { type: 'int8' })
+  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: string;
 
-  @Field()
   @Column({ unique: true })
   name: string;
 
-  @Field()
   @Column({ default: false })
   isDefault: boolean;
 

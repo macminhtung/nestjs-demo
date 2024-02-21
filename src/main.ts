@@ -55,9 +55,7 @@ async function bootstrap() {
   await app.listen(parseInt(`${PORT}`));
   logger.debug(
     `==> APP IS RUNNING | PORT: ${PORT} <== ${
-      NODE_ENV === 'development'
-        ? `[http://localhost:${PORT}/${swaggerPath}]`
-        : ''
+      NODE_ENV === 'dev' ? `[http://localhost:${PORT}/${swaggerPath}]` : ''
     }`,
     'APPLICATION',
   );

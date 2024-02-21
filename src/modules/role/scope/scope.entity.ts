@@ -4,7 +4,7 @@ import { EntityEnum } from 'common/enums';
 
 @Entity({ name: EntityEnum.SCOPE })
 export class ScopeEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('increment', { type: 'int8' })
+  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   id: string;
 
   @Column({ unique: true })

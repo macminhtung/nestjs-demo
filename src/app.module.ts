@@ -1,7 +1,5 @@
 import { Module, MiddlewareConsumer } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
 import { DataSource } from 'typeorm';
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserModule } from './modules/user/user.module';
 import { ConfigService } from 'modules/share/services/config.service';
@@ -32,14 +30,6 @@ import { HttpLoggerMiddleware } from 'middlewares/httpLogger.middleware';
         await dataSource.runMigrations();
         return dataSource;
       },
-    }),
-
-    // #==============================#
-    // # ==> APOLLO CONFIGURATION <== #
-    // #==============================#
-    GraphQLModule.forRoot<ApolloDriverConfig>({
-      driver: ApolloDriver,
-      autoSchemaFile: true,
     }),
   ],
 })

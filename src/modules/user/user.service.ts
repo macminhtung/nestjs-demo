@@ -3,13 +3,8 @@ import { UserEntity } from 'modules/user/user.entity';
 import { BaseService } from 'common/base.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  CreateUserInput,
-  UpdateUserInput,
-  DeleteUserInput,
-  GetUserArgs,
-  GetUsersArgs,
-} from 'modules/user/dto';
+import { PageOptionsDto } from 'common/dto';
+import { CreateUserBodyDto, UpdateUserBodyDto } from 'modules/user/dto';
 
 @Injectable()
 export class UserService extends BaseService<UserEntity> {
@@ -20,47 +15,51 @@ export class UserService extends BaseService<UserEntity> {
     super(userRepository);
   }
 
+  // #==================#
+  // # ==> GET USER <== #
+  // #==================#
+  async getUser(userId: string): Promise<UserEntity> {
+    return await this.checkExist({
+      where: { id: userId },
+      relations: { roles: true },
+    });
+  }
+
   // #=====================#
   // # ==> CREATE USER <== #
   // #=====================#
-  async createUser(input: CreateUserInput): Promise<UserEntity> {
-    return await this.repository.save(input);
+  async createUser(body: CreateUserBodyDto): Promise<UserEntity> {
+    return await this.repository.save(body);
   }
 
   // #=====================#
   // # ==> UPDATE USER <== #
   // #=====================#
-  async updateUser(input: UpdateUserInput): Promise<UserEntity> {
-    await this.checkExist({ id: input.id });
-    return await this.repository.save(input);
+  async updateUser(
+    userId: string,
+    body: UpdateUserBodyDto,
+  ): Promise<UserEntity> {
+    await this.checkExist({ id: userId });
+    return await this.repository.save(body);
   }
 
   // #=====================#
   // # ==> DELETE USER <== #
   // #=====================#
-  async deleteUser(input: DeleteUserInput): Promise<any> {
-    return await this.repository.softDelete(input.id);
-  }
-
-  // #==================#
-  // # ==> GET USER <== #
-  // #==================#
-  async getUser(args: GetUserArgs): Promise<UserEntity> {
-    return await this.checkExist({
-      where: { id: args.id },
-      relations: { roles: true },
-    });
+  async deleteUser(userId: string): Promise<string> {
+    await this.repository.softDelete(userId);
+    return userId;
   }
 
   // #===================#
   // # ==> GET USERS <== #
   // #===================#
-  async getUsers(args: GetUsersArgs): Promise<UserEntity[]> {
-    const queryBuilder = this.repository.createQueryBuilder('user');
+  async getUsers(query: PageOptionsDto): Promise<UserEntity[]> {
+    const queryBuilder = this.repository.createQueryBuilder('U');
 
-    if (args.ids?.length)
-      queryBuilder.where('id IN (:...ids)', { ids: args.ids });
+    if (query.ids?.length)
+      queryBuilder.where('U.id IN (:...ids)', { ids: query.ids });
 
-    return await queryBuilder.leftJoinAndSelect('user.roles', 'Rs').getMany();
+    return await queryBuilder.leftJoinAndSelect('U.roles', 'Rs').getMany();
   }
 }

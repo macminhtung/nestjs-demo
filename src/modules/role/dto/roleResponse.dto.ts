@@ -3,10 +3,10 @@ import { ScopeResponseDto } from 'modules/role/dto';
 import { BaseDto } from 'common/base.dto';
 
 export class RoleResponseDto extends BaseDto {
-  @ApiProperty({ type: Number })
-  id: number;
+  @ApiProperty()
+  id: string;
 
-  @ApiProperty({ type: String })
+  @ApiProperty()
   name: string;
 
   @ApiProperty({

@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { BaseDto } from 'common/base.dto';
 
 export class ScopeResponseDto extends BaseDto {
-  @ApiProperty({ type: Number })
+  @ApiProperty()
   id: number;
 
   @ApiProperty()
