@@ -21,6 +21,5 @@ import { RabbitService } from 'modules/rabbit-mq/rabbit.service';
     },
     RabbitService,
   ],
-  exports: [RabbitService],
 })
 export class RabbitModule {}

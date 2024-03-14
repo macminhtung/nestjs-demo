@@ -18,6 +18,5 @@ import { BullService } from 'modules/bull-mq/bull.service';
   ],
   controllers: [BullController],
   providers: [MessageProducer, MessageConsumer, BullService],
-  exports: [MessageProducer, MessageConsumer],
 })
 export class BullMQModule {}

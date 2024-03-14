@@ -11,7 +11,6 @@ import { ScopeController } from 'modules/role/scope/scope.controller';
 @Module({
   imports: [TypeOrmModule.forFeature([RoleEntity, ScopeEntity, UserEntity])],
   controllers: [RoleController, ScopeController],
-  exports: [RoleService, ScopeService],
   providers: [RoleService, ScopeService],
 })
 export class RoleModule {}

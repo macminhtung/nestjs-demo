@@ -13,6 +13,5 @@ import { ConfigService } from 'modules/share/services/config.service';
   ],
   controllers: [RabbitAdvanceController],
   providers: [RabbitAdvanceService],
-  exports: [RabbitAdvanceService],
 })
 export class RabbitAdvanceModule {}

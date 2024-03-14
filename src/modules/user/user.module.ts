@@ -8,8 +8,8 @@ import { PROVIDER_TOKENS } from 'common/constants';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity, RoleEntity])],
-  exports: [PROVIDER_TOKENS.USER_SERVICE, TypeOrmModule],
   controllers: [UserController],
   providers: [{ provide: PROVIDER_TOKENS.USER_SERVICE, useClass: UserService }],
+  exports: [PROVIDER_TOKENS.USER_SERVICE],
 })
 export class UserModule {}
