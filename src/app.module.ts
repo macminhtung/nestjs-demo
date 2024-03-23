@@ -6,14 +6,12 @@ import { ConfigService } from 'modules/share/services/config.service';
 import { SharedModule } from 'modules/share/shared.module';
 import { HttpLoggerMiddleware } from 'middlewares/httpLogger.middleware';
 // import { RabbitModule } from 'modules/rabbit-mq/rabbit.module';
-// import { BullMQModule } from 'modules/bull-mq/bull.module';
-// import { RabbitAdvanceModule } from 'modules/rabbit-mq-advance/rabbit-advance.module';
+import { BullMQModule } from 'modules/bull-mq/bull.module';
 
 @Module({
   imports: [
     // RabbitModule,
-    // RabbitAdvanceModule,
-    // BullMQModule,
+    BullMQModule,
     SharedModule,
     UserModule,
 

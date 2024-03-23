@@ -12,26 +12,25 @@ import { QUEUE_NAMES, JOB_NAMES } from 'common/constants/bullmq';
 export class MessageConsumer {
   @Process(JOB_NAMES.MESSAGE)
   readOperationJob(job: Job<unknown>) {
-    console.log(job.data);
-    return job.data;
+    console.log(
+      `\n[${QUEUE_NAMES.MESSAGE}] PROCESS - DATA:${JSON.stringify(job.data)}`,
+    );
+    return 'results';
   }
 
   @OnQueueActive()
   onActive(job: Job) {
-    console.log(`[ACTIVE - ${QUEUE_NAMES.MESSAGE}] - Processing job ${job.id}`);
-    console.log('\n ==> data =', job.data);
+    console.log(`\n[${QUEUE_NAMES.MESSAGE}] ACTIVE`);
+  }
+
+  @OnQueueCompleted()
+  onCompleted(job: Job, result: any) {
+    console.log(`\n[${QUEUE_NAMES.MESSAGE}] COMPLETED`);
+    console.log('\t==> result =', result);
   }
 
   @OnQueueError()
   onError(error: Error) {
     console.log(`[ERROR - ${QUEUE_NAMES.MESSAGE}] - Message: ${error.message}`);
-  }
-
-  @OnQueueCompleted()
-  onCompleted(job: Job, result: any) {
-    console.log(
-      `[COMPLETED - ${QUEUE_NAMES.MESSAGE}] -  JobId(${job.id}) successfully completed`,
-    );
-    console.log('\n ==> result =', result);
   }
 }

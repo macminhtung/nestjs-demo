@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ClientProxy, RmqRecordBuilder } from '@nestjs/microservices';
+import { ClientProxy } from '@nestjs/microservices';
 import { PATTERN_NAMES, RABBIT_SERVICE_NAME } from 'common/constants/rabbitmq';
 
 @Injectable()

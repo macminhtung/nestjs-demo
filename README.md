@@ -8,12 +8,19 @@
 ```bash
 $ yarn install
 ```
+## Run Redis Stack on Docker
+```bash
+$ docker run -d --name redis-stack -p 6379:6379 redis:latest
+```
 
-## Running the app
+## Run server
 
 ```bash
 # development
 $ yarn start:dev
+
+# staging
+$ yarn start:stg
 
 # production mode
 $ yarn start:prod

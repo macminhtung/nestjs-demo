@@ -2,13 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { BullRootModuleOptions } from '@nestjs/bull';
 import { ClientOptions, RmqOptions, Transport } from '@nestjs/microservices';
-import {
-  RABBIT_QUEUES,
-  RABBIT_EXCHANGES,
-  RABBIT_EXCHANGE_TYPES,
-  // RABBIT_CHANNELS,
-} from 'common/constants/rabbitmq';
-import { RabbitMQConfig } from '@golevelup/nestjs-rabbitmq';
+import { RABBIT_QUEUE } from 'common/constants/rabbitmq';
 import { MAIN_ENV } from 'env';
 
 const { DATABASE, RABBIT, REDIS } = MAIN_ENV;
@@ -69,45 +63,12 @@ export class ConfigService {
       transport: Transport.RMQ,
       options: {
         urls: [rabbitUrl],
-        queue: RABBIT_QUEUES.MESSAGE_1,
+        queue: RABBIT_QUEUE,
         noAck: false,
         queueOptions: {
           durable: true,
         },
       },
-    };
-
-    return options;
-  }
-
-  // # ====================== #
-  // # ==> RABBIT ADVANCE <== #
-  // # ====================== #
-  get rabbitAdvanceConfig(): RabbitMQConfig {
-    const { USERNAME, PASSWORD, PORT, HOST } = RABBIT;
-    // const { CHANNEL_1, CHANNEL_2 } = RABBIT_CHANNELS;
-    const rabbitUri =
-      USERNAME && PASSWORD
-        ? `amqp://${USERNAME}:${PASSWORD}@${HOST}:${PORT}`
-        : `amqp://${HOST}:${PORT}`;
-    const options: RabbitMQConfig = {
-      uri: rabbitUri,
-      enableControllerDiscovery: true,
-      exchanges: [
-        {
-          name: RABBIT_EXCHANGES.DIRECT,
-          type: RABBIT_EXCHANGE_TYPES.DIRECT,
-        },
-      ],
-      // channels: {
-      //   [CHANNEL_1]: {
-      //     prefetchCount: 5,
-      //     default: true,
-      //   },
-      //   [CHANNEL_2]: {
-      //     prefetchCount: 2,
-      //   },
-      // },
     };
 
     return options;

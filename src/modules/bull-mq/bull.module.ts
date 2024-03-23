@@ -10,6 +10,7 @@ import { BullService } from 'modules/bull-mq/bull.service';
 @Module({
   imports: [
     BullModule.forRootAsync({
+      inject: [ConfigService],
       useFactory: (configService: ConfigService) => configService.bullConfig,
     }),
     BullModule.registerQueue({

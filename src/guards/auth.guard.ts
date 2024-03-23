@@ -11,26 +11,8 @@ import { UserService } from 'modules/user/user.service';
 import { UNAUTHENTICATED_KEY, IAuthInfo } from 'decorators';
 import { MAIN_ENV } from 'env';
 import { Request } from 'express';
-import { RoleEntity } from 'modules/role/role.entity';
 
 export const AUTH_REQUEST_KEY = 'auth';
-export interface IRoleScopeInfo {
-  roleNames: string[];
-  scopeNames: string[];
-}
-export const getRoleScopeInfo = (roles: RoleEntity[]): IRoleScopeInfo =>
-  roles.reduce(
-    (prevV: { roleNames: string[]; scopeNames: string[] }, role) => {
-      const { name, scopes } = role;
-      prevV.roleNames.push(name);
-      scopes.forEach((scope) => {
-        if (!prevV.scopeNames.includes(scope.name))
-          prevV.scopeNames.push(scope.name);
-      });
-      return prevV;
-    },
-    { roleNames: [], scopeNames: [] },
-  );
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -70,7 +52,7 @@ export class AuthGuard implements CanActivate {
     // Check user already exists!
     const user = await this.userService.checkExist({
       where: { id: tokenPayload.id },
-      // relations: { roles: { scopes: true } },
+      relations: { roles: { scopes: true } },
     });
 
     // Check sessionTimestamp
@@ -81,12 +63,18 @@ export class AuthGuard implements CanActivate {
 
     // Add AUTH_REQUEST_KEY into the request
     const { id: authId, email, roles } = user;
-    const roleScopeInfo = getRoleScopeInfo(roles);
-    const authInfo: IAuthInfo = {
-      authId,
-      email,
-      ...roleScopeInfo,
-    };
+    const roleScopeInfo = roles.reduce(
+      (prevV: { roleNames: string[]; scopeNames: string[] }, role) => {
+        prevV.roleNames.push(role.name);
+        role.scopes.forEach(
+          ({ name }) =>
+            !prevV.scopeNames.includes(name) && prevV.scopeNames.push(name),
+        );
+        return prevV;
+      },
+      { roleNames: [], scopeNames: [] },
+    );
+    const authInfo: IAuthInfo = { authId, email, ...roleScopeInfo };
     request[AUTH_REQUEST_KEY] = authInfo;
 
     return true;
