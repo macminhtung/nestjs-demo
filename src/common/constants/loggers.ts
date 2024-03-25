@@ -1,0 +1,4 @@
+export const LOGGER_CONTEXTS = {
+  HTTP: 'HTTP',
+  WEBSOCKET: 'WEBSOCKET',
+};

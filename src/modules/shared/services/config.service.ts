@@ -4,8 +4,24 @@ import { BullRootModuleOptions } from '@nestjs/bull';
 import { ClientOptions, RmqOptions, Transport } from '@nestjs/microservices';
 import { RABBIT_QUEUE } from 'common/constants/rabbitmq';
 import { MAIN_ENV } from 'env';
+import { SimpleConsoleLogger } from 'typeorm';
 
 const { DATABASE, RABBIT, REDIS } = MAIN_ENV;
+
+// # ======================= #
+// # ==> DATABASE LOGGER <== #
+// # ======================= #
+class DBLogger extends SimpleConsoleLogger {
+  constructor() {
+    super();
+  }
+
+  logQuery(query: string, parameters?: any[]) {
+    console.log(`\x1b[45m[DATABASE]\x1b[0m`, `\x1b[90m${query}\x1b[0m`);
+    if (parameters?.length)
+      console.log('\x1b[33mParameters:\x1b[0m', JSON.stringify(parameters));
+  }
+}
 
 export class ConfigService {
   // # =============== #
@@ -28,7 +44,7 @@ export class ConfigService {
       migrationsRun: false,
       synchronize: true,
       namingStrategy: new SnakeNamingStrategy(),
-      logging: true,
+      logger: new DBLogger(),
     };
 
     return options;

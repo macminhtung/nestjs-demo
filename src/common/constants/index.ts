@@ -6,3 +6,5 @@ export * from './scopes';
 export * from './roleScopes';
 export * from './modules';
 export * from './users';
+export * from './socket';
+export * from './loggers';

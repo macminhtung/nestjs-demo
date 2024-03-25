@@ -6,6 +6,7 @@ dotenv.config({
 
 const {
   PORT,
+  SOCKET_PORT,
   JWT_SECRET_KEY,
   DB_HOST,
   DB_PORT,
@@ -24,7 +25,8 @@ const {
 
 export const MAIN_ENV = {
   APP: {
-    PORT: Number.parseInt(PORT, 10) || 5000,
+    PORT: Number.parseInt(PORT, 10) || 4000,
+    SOCKET_PORT: Number.parseInt(SOCKET_PORT, 10) || 4001,
     JWT_SECRET_KEY: JWT_SECRET_KEY,
   },
   DATABASE: {

@@ -3,7 +3,7 @@ import { BullController } from 'modules/bull-mq/bull.controller';
 import { BullModule } from '@nestjs/bull';
 import { MessageProducer } from 'modules/bull-mq/message/message.producer';
 import { MessageConsumer } from 'modules/bull-mq/message/message.consumer';
-import { ConfigService } from 'modules/share/services/config.service';
+import { ConfigService } from 'modules/shared/services/config.service';
 import { QUEUE_NAMES } from 'common/constants/bullmq';
 import { BullService } from 'modules/bull-mq/bull.service';
 

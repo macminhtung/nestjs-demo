@@ -4,7 +4,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-class HandleTreeError {
+export class HandleTreeError {
   constructor(validationErrors: ValidationError[]) {
     this.validationErrors = validationErrors;
   }
