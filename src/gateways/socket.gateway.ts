@@ -19,7 +19,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { MAIN_ENV } from 'env';
 import * as jwt from 'jsonwebtoken';
-import { JwtPayload, VerifyErrors } from 'jsonwebtoken';
+import type { JwtPayload, VerifyErrors } from 'jsonwebtoken';
 import { WsExceptionsFilter } from 'filters/wsException.filter';
 import {
   PROVIDER_TOKENS,
