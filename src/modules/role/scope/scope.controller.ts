@@ -2,7 +2,7 @@ import { Controller, Get, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ScopeService } from 'modules/role/scope/scope.service';
 import { MODULE_NAMES, DEFAULT_SCOPES } from 'common/constants';
-import { ScopeResponseDto } from 'modules/role/dto';
+import { ScopeEntity } from 'modules/role/scope/scope.entity';
 import { PageOptionsDto } from 'common/dto';
 import { ApiResponsePagination, Authorization } from 'decorators';
 
@@ -17,7 +17,7 @@ export class ScopeController {
   // #================================#
   @Authorization([GET_ROLE.name])
   @Get()
-  @ApiResponsePagination(ScopeResponseDto)
+  @ApiResponsePagination(ScopeEntity)
   getScopesByQuery(@Query() query: PageOptionsDto) {
     return this.scopeService.getScopesByQuery(query);
   }

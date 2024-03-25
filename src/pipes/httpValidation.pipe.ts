@@ -10,13 +10,13 @@ class HandleTreeError {
   }
 
   private validationErrors: ValidationError[];
-  private listError: string[] = [];
+  private listErrors: string[] = [];
 
   processErrorTree(validationError: ValidationError) {
     const { property, constraints, children = [] } = validationError;
     if (constraints) {
       const formatItemError = Object.values(constraints);
-      this.listError.push(`${property} - (${formatItemError})`);
+      this.listErrors.push(`${property} - (${formatItemError})`);
     }
 
     children.forEach((childValidationError) =>
@@ -28,7 +28,7 @@ class HandleTreeError {
     this.validationErrors.forEach((validationError) => {
       this.processErrorTree(validationError);
     });
-    return this.listError.join(' | ');
+    return this.listErrors.join(' | ');
   }
 }
 

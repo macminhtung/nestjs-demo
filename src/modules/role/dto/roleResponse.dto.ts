@@ -1,17 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { ScopeResponseDto } from 'modules/role/dto';
-import { BaseDto } from 'common/base.dto';
+import { RoleEntity } from 'modules/role/role.entity';
+import { ScopeEntity } from 'modules/role/scope/scope.entity';
 
-export class RoleResponseDto extends BaseDto {
-  @ApiProperty()
-  id: string;
-
-  @ApiProperty()
-  name: string;
-
+export class RoleResponseDto extends RoleEntity {
   @ApiProperty({
-    type: () => ScopeResponseDto,
+    type: () => ScopeEntity,
     isArray: true,
   })
-  scopes: ScopeResponseDto[];
+  scopes: ScopeEntity[];
 }
