@@ -13,7 +13,7 @@ export const formatLoggerMessage = (stack: any, message: string) => {
     (prevV: string, curV: string, idx: number) =>
       prevV + `- ${curV?.trim()}${idx < errorLines.length - 1 ? '\n' : ''}`,
     '',
-  )}\n`;
+  )}`;
 };
 
 @Catch()

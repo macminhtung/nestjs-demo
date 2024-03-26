@@ -11,7 +11,7 @@ import { GatewayModule } from 'gateways/gateway.module';
 
 @Module({
   imports: [
-    BullMQModule,
+    // BullMQModule,
     SharedModule,
     UserModule,
     GatewayModule,
